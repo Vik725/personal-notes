@@ -1,7 +1,13 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode } from "react";
-import { Pencil } from "lucide-react";
+import { Pencil, Lock, Unlock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+
+const ADMIN_PASSWORD = "admin123";
 
 interface EditModeContextType {
   isEditMode: boolean;
@@ -23,14 +29,76 @@ export function useEditMode() {
 
 export function EditModeProvider({ children }: { children: ReactNode }) {
   const [isEditMode, setIsEditMode] = useState(false);
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const toggle = () => setIsEditMode((prev) => !prev);
+  const handleToggle = () => {
+    if (isEditMode) {
+      setIsEditMode(false);
+    } else {
+      setShowPasswordDialog(true);
+      setPassword("");
+      setError("");
+    }
+  };
+
+  const handleSubmit = () => {
+    if (password === ADMIN_PASSWORD) {
+      setIsEditMode(true);
+      setShowPasswordDialog(false);
+      setPassword("");
+      setError("");
+    } else {
+      setError("Неверный пароль");
+    }
+  };
+
   const enable = () => setIsEditMode(true);
   const disable = () => setIsEditMode(false);
 
   return (
-    <EditModeContext.Provider value={{ isEditMode, toggle, enable, disable }}>
+    <EditModeContext.Provider value={{ isEditMode, toggle: handleToggle, enable, disable }}>
       {children}
+
+      <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+        <DialogHeader>
+          <DialogTitle>Вход для администратора</DialogTitle>
+          <DialogDescription>
+            Введите пароль для доступа к редактированию
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div>
+            <Label>Пароль</Label>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError("");
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSubmit();
+              }}
+              placeholder="Введите пароль"
+              autoFocus
+            />
+            {error && (
+              <p className="mt-1 text-sm text-red-500">{error}</p>
+            )}
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setShowPasswordDialog(false)}>
+              Отмена
+            </Button>
+            <Button onClick={handleSubmit}>
+              <Unlock className="h-4 w-4" />
+              Войти
+            </Button>
+          </div>
+        </div>
+      </Dialog>
     </EditModeContext.Provider>
   );
 }
@@ -47,7 +115,11 @@ export function EditModeToggle() {
           : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
       }`}
     >
-      <Pencil className={`h-4 w-4 ${isEditMode ? "animate-pulse" : ""}`} />
+      {isEditMode ? (
+        <Lock className="h-4 w-4" />
+      ) : (
+        <Pencil className="h-4 w-4" />
+      )}
       {isEditMode ? "Режим редактирования" : "Редактировать"}
     </button>
   );
