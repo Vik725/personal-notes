@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { HandshakeListener } from "@/components/handshake-listener";
+import { EditModeProvider, EditModeToggle } from "@/components/edit-mode-provider";
 
 const appName = "Управляющий совет";
 
@@ -35,7 +36,10 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <HandshakeListener />
-        {children}
+        <EditModeProvider>
+          {children}
+          <EditModeToggle />
+        </EditModeProvider>
         <Toaster />
       </body>
     </html>
