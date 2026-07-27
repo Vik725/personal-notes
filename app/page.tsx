@@ -2,32 +2,58 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Video, Pencil, X, Check } from "lucide-react";
+import { ArrowLeft, Phone, Mail, User, Pencil, X, Check, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEditMode } from "@/components/edit-mode-provider";
 
-const defaultVideo = {
-  videoUrl: "https://vk.com/video_ext.php?oid=-123456789&id=123456789&hash=abc123",
-  title: "Презентационный видеоролик",
-  description: "О деятельности Управляющего совета",
-};
+interface Contact {
+  id: string;
+  name: string;
+  position: string;
+  phone: string;
+  email: string;
+}
 
-export default function VideoPage() {
+const defaultContacts: Contact[] = [
+  { id: "1", name: "Иванова Мария Сергеевна", position: "Председатель совета", phone: "+7 (999) 123-45-67", email: "ivanova@example.com" },
+  { id: "2", name: "Петров Алексей Владимирович", position: "Заместитель председателя", phone: "+7 (999) 234-56-78", email: "petrov@example.com" },
+  { id: "3", name: "Сидорова Елена Николаевна", position: "Секретарь совета", phone: "+7 (999) 345-67-89", email: "sidorova@example.com" },
+];
+
+export default function ContactsPage() {
   const { isEditMode } = useEditMode();
-  const [video, setVideo] = useState(defaultVideo);
-  const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState({ ...video });
+  const [contacts, setContacts] = useState(defaultContacts);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
+  const [form, setForm] = useState({ name: "", position: "", phone: "", email: "" });
 
-  const handleSave = () => {
-    setVideo({ ...form });
-    setEditing(false);
+  const resetForm = () => setForm({ name: "", position: "", phone: "", email: "" });
+
+  const handleAdd = () => {
+    const newContact: Contact = {
+      id: String(Date.now()),
+      ...form,
+    };
+    setContacts([...contacts, newContact]);
+    setAdding(false);
+    resetForm();
   };
 
-  const handleCancel = () => {
-    setForm({ ...video });
-    setEditing(false);
+  const handleEdit = (contact: Contact) => {
+    setEditingId(contact.id);
+    setForm({ name: contact.name, position: contact.position, phone: contact.phone, email: contact.email });
+  };
+
+  const handleSave = () => {
+    setContacts(contacts.map((c) => (c.id === editingId ? { ...c, ...form } : c)));
+    setEditingId(null);
+    resetForm();
+  };
+
+  const handleDelete = (id: string) => {
+    setContacts(contacts.filter((c) => c.id !== id));
   };
 
   return (
@@ -39,11 +65,11 @@ export default function VideoPage() {
             На главную
           </Link>
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold sm:text-3xl">Видеоролик</h1>
-            {isEditMode && !editing && (
-              <Button variant="secondary" size="sm" onClick={() => setEditing(true)} className="bg-white/20 text-white hover:bg-white/30">
-                <Pencil className="h-4 w-4" />
-                Изменить
+            <h1 className="text-2xl font-bold sm:text-3xl">Контакты</h1>
+            {isEditMode && !adding && (
+              <Button variant="secondary" size="sm" onClick={() => setAdding(true)} className="bg-white/20 text-white hover:bg-white/30">
+                <Plus className="h-4 w-4" />
+                Добавить
               </Button>
             )}
           </div>
@@ -51,41 +77,68 @@ export default function VideoPage() {
       </div>
 
       <div className="mx-auto max-w-4xl px-4 py-8">
-        <div className="rounded-xl border bg-white p-6 shadow-sm">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-              <Video className="h-6 w-6" />
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900">{video.title}</h2>
-              <p className="text-sm text-gray-500">{video.description}</p>
-            </div>
-          </div>
-
-          {editing ? (
-            <div className="space-y-4 rounded-lg border bg-gray-50 p-4">
-              <div>
-                <Label>Ссылка на видео (URL)</Label>
-                <Input value={form.videoUrl} onChange={(e) => setForm({ ...form, videoUrl: e.target.value })} placeholder="https://vk.com/video_ext.php?..." />
-              </div>
-              <div>
-                <Label>Название</Label>
-                <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-              </div>
-              <div>
-                <Label>Описание</Label>
-                <Input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-              </div>
+        <div className="space-y-4">
+          {adding && (
+            <div className="rounded-xl border bg-white p-5 shadow-sm space-y-3">
+              <h3 className="font-semibold text-gray-900">Новый контакт</h3>
+              <div><Label>ФИО</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
+              <div><Label>Должность в совете</Label><Input value={form.position} onChange={(e) => setForm({ ...form, position: e.target.value })} /></div>
+              <div><Label>Телефон</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
+              <div><Label>Email</Label><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
               <div className="flex gap-2">
-                <Button onClick={handleSave}><Check className="h-4 w-4" /> Сохранить</Button>
-                <Button variant="outline" onClick={handleCancel}><X className="h-4 w-4" /> Отмена</Button>
+                <Button onClick={handleAdd}><Check className="h-4 w-4" /> Добавить</Button>
+                <Button variant="outline" onClick={() => { setAdding(false); resetForm(); }}><X className="h-4 w-4" /> Отмена</Button>
               </div>
-            </div>
-          ) : (
-            <div className="aspect-video w-full overflow-hidden rounded-lg bg-gray-100">
-              <iframe src={video.videoUrl} width="100%" height="100%" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowFullScreen className="border-0" title={video.title} />
             </div>
           )}
+
+          {contacts.map((contact) => (
+            <div key={contact.id} className="rounded-xl border bg-white p-5 shadow-sm">
+              {editingId === contact.id ? (
+                <div className="space-y-3">
+                  <h3 className="font-semibold text-gray-900">Редактировать</h3>
+                  <div><Label>ФИО</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
+                  <div><Label>Должность</Label><Input value={form.position} onChange={(e) => setForm({ ...form, position: e.target.value })} /></div>
+                  <div><Label>Телефон</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
+                  <div><Label>Email</Label><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
+                  <div className="flex gap-2">
+                    <Button onClick={handleSave}><Check className="h-4 w-4" /> Сохранить</Button>
+                    <Button variant="outline" onClick={() => { setEditingId(null); resetForm(); }}><X className="h-4 w-4" /> Отмена</Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-600">
+                    <User className="h-6 w-6" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <h3 className="font-semibold text-gray-900">{contact.name}</h3>
+                        <p className="text-sm text-gray-500">{contact.position}</p>
+                      </div>
+                      {isEditMode && (
+                        <div className="flex gap-1 shrink-0">
+                          <Button variant="ghost" size="sm" onClick={() => handleEdit(contact)}><Pencil className="h-4 w-4" /></Button>
+                          <Button variant="ghost" size="sm" onClick={() => handleDelete(contact.id)} className="text-red-500 hover:text-red-700"><Trash2 className="h-4 w-4" /></Button>
+                        </div>
+                      )}
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-3">
+                      <a href={`tel:${contact.phone}`} className="inline-flex items-center gap-1.5 rounded-lg bg-green-50 px-3 py-1.5 text-sm font-medium text-green-700 hover:bg-green-100 transition-colors">
+                        <Phone className="h-3.5 w-3.5" />
+                        {contact.phone}
+                      </a>
+                      <a href={`mailto:${contact.email}`} className="inline-flex items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors">
+                        <Mail className="h-3.5 w-3.5" />
+                        {contact.email}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>
