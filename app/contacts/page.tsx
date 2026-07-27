@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Phone, Mail, User, Pencil, X, Check, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,18 +24,32 @@ const defaultContacts: Contact[] = [
 
 export default function ContactsPage() {
   const { isEditMode } = useEditMode();
-  const [contacts, setContacts] = useState(defaultContacts);
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [loaded, setLoaded] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   const [form, setForm] = useState({ name: "", position: "", phone: "", email: "" });
 
+  useEffect(() => {
+    const saved = localStorage.getItem("contacts");
+    if (saved) {
+      setContacts(JSON.parse(saved));
+    } else {
+      setContacts(defaultContacts);
+    }
+    setLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (loaded) {
+      localStorage.setItem("contacts", JSON.stringify(contacts));
+    }
+  }, [contacts, loaded]);
+
   const resetForm = () => setForm({ name: "", position: "", phone: "", email: "" });
 
   const handleAdd = () => {
-    const newContact: Contact = {
-      id: String(Date.now()),
-      ...form,
-    };
+    const newContact: Contact = { id: String(Date.now()), ...form };
     setContacts([...contacts, newContact]);
     setAdding(false);
     resetForm();
@@ -55,6 +69,8 @@ export default function ContactsPage() {
   const handleDelete = (id: string) => {
     setContacts(contacts.filter((c) => c.id !== id));
   };
+
+  if (!loaded) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
