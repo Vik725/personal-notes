@@ -1,7 +1,35 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Video } from "lucide-react";
+import { ArrowLeft, Video, Pencil, X, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useEditMode } from "@/components/edit-mode-provider";
+
+const defaultVideo = {
+  videoUrl: "https://vk.com/video_ext.php?oid=-123456789&id=123456789&hash=abc123",
+  title: "Презентационный видеоролик",
+  description: "О деятельности Управляющего совета",
+};
 
 export default function VideoPage() {
+  const { isEditMode } = useEditMode();
+  const [video, setVideo] = useState(defaultVideo);
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState({ ...video });
+
+  const handleSave = () => {
+    setVideo({ ...form });
+    setEditing(false);
+  };
+
+  const handleCancel = () => {
+    setForm({ ...video });
+    setEditing(false);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <div className="gradient-hero-vibrant pattern-grid text-white">
@@ -16,37 +44,72 @@ export default function VideoPage() {
 
       <div className="mx-auto max-w-4xl px-4 py-8">
         <div className="rounded-xl border bg-white p-6 shadow-sm">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-              <Video className="h-6 w-6" />
+          <div className="flex items-center justify-between gap-3 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                <Video className="h-6 w-6" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">{video.title}</h2>
+                <p className="text-sm text-gray-500">{video.description}</p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900">
-                Презентационный видеоролик
-              </h2>
-              <p className="text-sm text-gray-500">
-                О деятельности Управляющего совета
-              </p>
-            </div>
+            {isEditMode && !editing && (
+              <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
+                <Pencil className="h-4 w-4" />
+                Изменить
+              </Button>
+            )}
           </div>
 
-          {/* Видеоплеер */}
-          <div className="aspect-video w-full overflow-hidden rounded-lg bg-gray-100">
-            <iframe
-              src="https://vk.com/video_ext.php?oid=-123456789&id=123456789&hash=abc123"
-              width="100%"
-              height="100%"
-              allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-              allowFullScreen
-              className="border-0"
-              title="Презентационный видеоролик"
-            />
-          </div>
-
-          <p className="mt-4 text-sm text-gray-500">
-            Здесь будет отображаться видеоролик о работе Управляющего совета.
-            Чтобы добавить своё видео из ВКонтакте, нужно заменить ссылку в коде.
-          </p>
+          {editing ? (
+            <div className="space-y-4 rounded-lg border bg-gray-50 p-4">
+              <div>
+                <Label>Ссылка на видео (URL)</Label>
+                <Input
+                  value={form.videoUrl}
+                  onChange={(e) => setForm({ ...form, videoUrl: e.target.value })}
+                  placeholder="https://vk.com/video_ext.php?..."
+                />
+              </div>
+              <div>
+                <Label>Название</Label>
+                <Input
+                  value={form.title}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label>Описание</Label>
+                <Input
+                  value={form.description}
+                  onChange={(e) => setForm({ ...form, description: e.target.value })}
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button onClick={handleSave}>
+                  <Check className="h-4 w-4" />
+                  Сохранить
+                </Button>
+                <Button variant="outline" onClick={handleCancel}>
+                  <X className="h-4 w-4" />
+                  Отмена
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="aspect-video w-full overflow-hidden rounded-lg bg-gray-100">
+              <iframe
+                src={video.videoUrl}
+                width="100%"
+                height="100%"
+                allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+                allowFullScreen
+                className="border-0"
+                title={video.title}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
