@@ -23,6 +23,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    await ensureFolder();
+
     const downloadRes = await fetch(
       `${BASE_URL}/resources/download?path=/${APP_FOLDER}/${file}`,
       { headers: { Authorization: `OAuth ${YA_DISK_TOKEN}` } }
@@ -37,35 +39,50 @@ export async function GET(request: NextRequest) {
     const data = await fileRes.json();
     return NextResponse.json(data);
   } catch (e) {
+    console.error("GET error:", e);
     return NextResponse.json({ error: "Failed to load file" }, { status: 500 });
   }
 }
 
 export async function PUT(request: NextRequest) {
-  const { file, data } = await request.json();
-  if (!file || !data) {
-    return NextResponse.json({ error: "Missing file or data" }, { status: 400 });
-  }
-
   try {
+    const { file, data } = await request.json();
+    if (!file || !data) {
+      return NextResponse.json({ error: "Missing file or data" }, { status: 400 });
+    }
+
     await ensureFolder();
 
+    // Получаем ссылку для загрузки
     const uploadRes = await fetch(
       `${BASE_URL}/resources/upload?path=/${APP_FOLDER}/${file}&overwrite=true`,
       { headers: { Authorization: `OAuth ${YA_DISK_TOKEN}` } }
     );
 
+    if (!uploadRes.ok) {
+      const errText = await uploadRes.text();
+      console.error("Upload URL error:", uploadRes.status, errText);
+      return NextResponse.json({ error: "Failed to get upload URL" }, { status: 500 });
+    }
+
     const uploadData = await uploadRes.json();
     const jsonString = JSON.stringify(data, null, 2);
 
-    await fetch(uploadData.href, {
+    // Загружаем файл
+    const uploadFileRes = await fetch(uploadData.href, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: jsonString,
     });
 
+    if (!uploadFileRes.ok) {
+      console.error("Upload file error:", uploadFileRes.status);
+      return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });
+    }
+
     return NextResponse.json({ success: true });
   } catch (e) {
+    console.error("PUT error:", e);
     return NextResponse.json({ error: "Failed to save file" }, { status: 500 });
   }
 }
