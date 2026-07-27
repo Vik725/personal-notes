@@ -54,7 +54,7 @@ export default function VideoPage() {
                 <p className="text-sm text-gray-500">{video.description}</p>
               </div>
             </div>
-            {isEditMode && !editing && (
+            {isEditMode && (
               <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
                 <Pencil className="h-4 w-4" />
                 Изменить
