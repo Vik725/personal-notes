@@ -6,7 +6,7 @@ import {
   ScrollText,
   FileText,
   FolderOpen,
-  Sitemap,
+  Share2,
   Users,
   GitBranch,
   Archive,
@@ -62,7 +62,7 @@ const sections = [
   {
     title: "Структура совета",
     description: "Организационная структура Управляющего совета",
-    icon: Sitemap,
+    icon: Share2,
     href: "/structure",
     count: null,
   },
