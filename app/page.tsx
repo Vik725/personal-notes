@@ -114,18 +114,18 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Hero */}
-      <div className="gradient-hero-vibrant pattern-grid text-white">
+      <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-white">
         <div className="mx-auto max-w-4xl px-4 py-16 sm:py-24">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Building2 className="h-8 w-8 text-blue-200" />
-            <span className="text-sm font-medium uppercase tracking-widest text-blue-200">
+            <span className="text-sm font-bold uppercase tracking-widest text-blue-200">
               Детский сад
             </span>
           </div>
-          <h1 className="text-center text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+          <h1 className="text-center text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
             Управляющий совет
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-center text-lg text-blue-100">
+          <p className="mx-auto mt-4 max-w-2xl text-center text-lg font-medium text-blue-100">
             Вся информация о работе Управляющего совета в одном месте
           </p>
         </div>
