@@ -22,6 +22,33 @@ const defaultContacts: Contact[] = [
   { id: "3", name: "Сидорова Елена Николаевна", position: "Секретарь совета", phone: "+7 (999) 345-67-89", email: "sidorova@example.com" },
 ];
 
+const DATA_FILE = "contacts.json";
+
+async function loadFromDisk(): Promise<Contact[] | null> {
+  try {
+    const res = await fetch(`/api/disk?file=${DATA_FILE}`);
+    if (res.ok) {
+      const data = await res.json();
+      return data.contacts || null;
+    }
+  } catch (e) {
+    console.log("Failed to load from disk:", e);
+  }
+  return null;
+}
+
+async function saveToDisk(contacts: Contact[]) {
+  try {
+    await fetch("/api/disk", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ file: DATA_FILE, data: { contacts } }),
+    });
+  } catch (e) {
+    console.log("Failed to save to disk:", e);
+  }
+}
+
 export default function ContactsPage() {
   const { isEditMode } = useEditMode();
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -31,26 +58,26 @@ export default function ContactsPage() {
   const [form, setForm] = useState({ name: "", position: "", phone: "", email: "" });
 
   useEffect(() => {
-    const saved = localStorage.getItem("contacts");
-    if (saved) {
-      setContacts(JSON.parse(saved));
-    } else {
-      setContacts(defaultContacts);
-    }
-    setLoaded(true);
+    loadFromDisk().then((data) => {
+      if (data && data.length > 0) {
+        setContacts(data);
+      } else {
+        setContacts(defaultContacts);
+      }
+      setLoaded(true);
+    });
   }, []);
 
-  useEffect(() => {
-    if (loaded) {
-      localStorage.setItem("contacts", JSON.stringify(contacts));
-    }
-  }, [contacts, loaded]);
+  const save = async (newContacts: Contact[]) => {
+    setContacts(newContacts);
+    await saveToDisk(newContacts);
+  };
 
   const resetForm = () => setForm({ name: "", position: "", phone: "", email: "" });
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     const newContact: Contact = { id: String(Date.now()), ...form };
-    setContacts([...contacts, newContact]);
+    await save([...contacts, newContact]);
     setAdding(false);
     resetForm();
   };
@@ -60,14 +87,14 @@ export default function ContactsPage() {
     setForm({ name: contact.name, position: contact.position, phone: contact.phone, email: contact.email });
   };
 
-  const handleSave = () => {
-    setContacts(contacts.map((c) => (c.id === editingId ? { ...c, ...form } : c)));
+  const handleSave = async () => {
+    await save(contacts.map((c) => (c.id === editingId ? { ...c, ...form } : c)));
     setEditingId(null);
     resetForm();
   };
 
-  const handleDelete = (id: string) => {
-    setContacts(contacts.filter((c) => c.id !== id));
+  const handleDelete = async (id: string) => {
+    await save(contacts.filter((c) => c.id !== id));
   };
 
   if (!loaded) return null;
