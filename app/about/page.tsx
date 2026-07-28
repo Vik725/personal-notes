@@ -23,7 +23,7 @@ const defaultInfo: BasicInfo = {
   createdYear: "2020",
   keyFacts: [
     "В составе 15 человек",
-    "Заседания проводятся ежеквартально",
+    "Заседания проводятся ежекврартально",
   ],
   additionalText: "",
 };
