@@ -3,12 +3,6 @@ import { ArrowLeft, Newspaper, ExternalLink, ShieldCheck, Calendar } from "lucid
 
 const GOSUSLUGI_URL = "https://vsad25.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/struktura-i-organy-upravleniya-obrazovatelnoy-organizatsii/upravlyayuschiy-sovet/smi-o-nas/";
 
-const newsItems = [
-  { title: "Заседание Управляющего совета", date: "Декабрь 2025", description: "Очередное заседание Управляющего совета детского сада" },
-  { title: "Итоги конкурса проектов", date: "Ноябрь 2025", description: "Подведены итоги конкурса проектов Управляющего совета" },
-  { title: "День открытых дверей", date: "Октябрь 2025", description: "Управляющий совет провёл день открытых дверей для родителей" },
-];
-
 export default function NewsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -46,7 +40,7 @@ export default function NewsPage() {
                 Все новости на сайте детского сада
               </h2>
               <p className="mt-1 text-sm text-gray-500">
-                Нажмите, чтобы перейти на официальный сайт и посмотреть все новости и события
+                Нажмите, чтобы перейти на официальный сайт и посмотреть все актуальные новости и события
               </p>
               <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700 group-hover:bg-blue-200 transition-colors">
                 <ShieldCheck className="h-3.5 w-3.5" />
@@ -57,33 +51,20 @@ export default function NewsPage() {
           </div>
         </a>
 
-        <div className="space-y-4">
-          <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-            Последние новости
+        <div className="rounded-xl border bg-white p-8 shadow-sm text-center">
+          <Newspaper className="h-12 w-12 text-blue-300 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            Новости на официальном сайте
           </h3>
-          {newsItems.map((item, i) => (
-            <div key={i} className="rounded-xl border bg-white p-5 shadow-sm">
-              <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                  <Newspaper className="h-6 w-6" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
-                    <Calendar className="h-3.5 w-3.5" />
-                    {item.date}
-                  </div>
-                  <h4 className="text-lg font-semibold text-gray-900">{item.title}</h4>
-                  <p className="mt-1 text-sm text-gray-500">{item.description}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+          <p className="text-gray-500 max-w-md mx-auto">
+            Все актуальные новости и события Управляющего совета публикуются на официальном сайте детского сада. Нажмите на карточку выше, чтобы перейти к ним.
+          </p>
         </div>
 
         <div className="mt-8 rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-blue-800">
           <p className="font-medium">📌 Актуальные новости</p>
           <p className="mt-1 text-blue-600">
-            Все новости и события публикуются на официальном сайте детского сада.
+            Все новости и события публикуются на официальном сайте детского сада. Переходите по ссылке, чтобы быть в курсе последних событий.
           </p>
         </div>
       </div>
