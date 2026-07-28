@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Building2, Calendar, Users, FileCheck, Pencil, X, Check } from "lucide-react";
+import { ArrowLeft, Building2, Calendar, FileCheck, Pencil, X, Check, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,23 +10,22 @@ import { Label } from "@/components/ui/label";
 import { useEditMode } from "@/components/edit-mode-provider";
 
 interface BasicInfo {
+  councilName: string;
   institutionName: string;
-  councilStatus: string;
-  termStart: string;
-  termEnd: string;
+  createdYear: string;
   keyFacts: string[];
+  additionalText: string;
 }
 
 const defaultInfo: BasicInfo = {
+  councilName: "Управляющий совет",
   institutionName: "МБДОУ «Детский сад №25 г. Выборга»",
-  councilStatus: "Управляющий совет",
-  termStart: "2024",
-  termEnd: "2026",
+  createdYear: "2020",
   keyFacts: [
-    "Создан в 2020 году",
     "В составе 15 человек",
     "Заседания проводятся ежеквартально",
   ],
+  additionalText: "",
 };
 
 const DATA_FILE = "basic-info.json";
@@ -70,11 +69,11 @@ export default function AboutPage() {
 
   const handleSave = async () => {
     const newInfo: BasicInfo = {
+      councilName: form.councilName,
       institutionName: form.institutionName,
-      councilStatus: form.councilStatus,
-      termStart: form.termStart,
-      termEnd: form.termEnd,
+      createdYear: form.createdYear,
       keyFacts: form.keyFactsText.split("\n").filter((f) => f.trim()),
+      additionalText: form.additionalText,
     };
     setInfo(newInfo);
     await saveToDisk(newInfo);
@@ -112,26 +111,24 @@ export default function AboutPage() {
         {editing ? (
           <div className="rounded-xl border bg-white p-6 shadow-sm space-y-4">
             <div>
-              <Label>Название учреждения</Label>
+              <Label>Название совета (жирным шрифтом)</Label>
+              <Input value={form.councilName} onChange={(e) => setForm({ ...form, councilName: e.target.value })} />
+            </div>
+            <div>
+              <Label>Название учреждения (обычным шрифтом)</Label>
               <Input value={form.institutionName} onChange={(e) => setForm({ ...form, institutionName: e.target.value })} />
             </div>
             <div>
-              <Label>Статус совета</Label>
-              <Input value={form.councilStatus} onChange={(e) => setForm({ ...form, councilStatus: e.target.value })} />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Срок с</Label>
-                <Input value={form.termStart} onChange={(e) => setForm({ ...form, termStart: e.target.value })} />
-              </div>
-              <div>
-                <Label>Срок по</Label>
-                <Input value={form.termEnd} onChange={(e) => setForm({ ...form, termEnd: e.target.value })} />
-              </div>
+              <Label>Создан в (год)</Label>
+              <Input value={form.createdYear} onChange={(e) => setForm({ ...form, createdYear: e.target.value })} />
             </div>
             <div>
               <Label>Ключевые факты (каждый с новой строки)</Label>
               <Textarea value={form.keyFactsText} onChange={(e) => setForm({ ...form, keyFactsText: e.target.value })} rows={5} />
+            </div>
+            <div>
+              <Label>Дополнительный текст (можно вставлять ссылки в формате HTML)</Label>
+              <Textarea value={form.additionalText} onChange={(e) => setForm({ ...form, additionalText: e.target.value })} rows={4} placeholder='Например: Подробнее на сайте &lt;a href="https://example.com"&gt;название&lt;/a&gt;' />
             </div>
             <div className="flex gap-2">
               <Button onClick={handleSave}><Check className="h-4 w-4" /> Сохранить</Button>
@@ -141,33 +138,24 @@ export default function AboutPage() {
         ) : (
           <div className="rounded-xl border bg-white p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-6">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-                <Building2 className="h-6 w-6" />
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-blue-600 text-white">
+                <Building2 className="h-7 w-7" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">{info.institutionName}</h2>
-                <p className="text-sm text-gray-500">{info.councilStatus}</p>
+                <h2 className="text-2xl font-bold text-gray-900">{info.councilName}</h2>
+                <p className="text-base text-gray-500 mt-0.5">{info.institutionName}</p>
               </div>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-lg border bg-gray-50 p-4">
-                <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
-                  <Calendar className="h-4 w-4" />
-                  Срок полномочий
-                </div>
-                <p className="font-medium text-gray-900">{info.termStart} — {info.termEnd}</p>
+            <div className="rounded-lg border bg-gray-50 p-4 mb-6">
+              <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
+                <Calendar className="h-4 w-4" />
+                Создан в
               </div>
-              <div className="rounded-lg border bg-gray-50 p-4">
-                <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
-                  <Users className="h-4 w-4" />
-                  Статус
-                </div>
-                <p className="font-medium text-gray-900">{info.councilStatus}</p>
-              </div>
+              <p className="font-medium text-gray-900 text-lg">{info.createdYear} году</p>
             </div>
 
-            <div className="mt-6">
+            <div className="mb-6">
               <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
                 <FileCheck className="h-4 w-4" />
                 Ключевые факты
@@ -175,12 +163,19 @@ export default function AboutPage() {
               <ul className="space-y-2">
                 {info.keyFacts.map((fact, i) => (
                   <li key={i} className="flex items-start gap-2 rounded-lg border bg-white p-3">
-                    <span className="mt-1 flex h-2 w-2 shrink-0 rounded-full bg-blue-500" />
+                    <span className="mt-1.5 flex h-2 w-2 shrink-0 rounded-full bg-blue-500" />
                     <span className="text-gray-700">{fact}</span>
                   </li>
                 ))}
               </ul>
             </div>
+
+            {info.additionalText && (
+              <div
+                className="rounded-lg border bg-blue-50 p-4 text-sm text-blue-800 prose prose-blue max-w-none"
+                dangerouslySetInnerHTML={{ __html: info.additionalText }}
+              />
+            )}
           </div>
         )}
       </div>
