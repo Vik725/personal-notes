@@ -41,7 +41,7 @@ const sections = [
   },
   {
     title: "Нормативно-правовая база",
-    description: "Федеральные, региональные и муниципальные документы",
+    description: "Документы, регулирующие деятельность совета",
     icon: ScrollText,
     href: "/regulations",
     count: null,
@@ -55,7 +55,7 @@ const sections = [
   },
   {
     title: "Документы",
-    description: "Положение, регламенты, приказы, планы, отчёты",
+    description: "Основные документы Управляющего совета",
     icon: FolderOpen,
     href: "/documents",
     count: null,
@@ -104,7 +104,7 @@ const sections = [
   },
   {
     title: "Новости",
-    description: "Лента новостей и событий совета",
+    description: "Новости и события совета",
     icon: Newspaper,
     href: "/news",
     count: null,
@@ -124,10 +124,14 @@ export default function HomePage() {
       {/* Hero */}
       <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-white">
         <div className="mx-auto max-w-4xl px-4 py-16 sm:py-24">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Building2 className="h-8 w-8 text-blue-200" />
+          <div className="flex flex-col items-center gap-4 mb-4">
+            <img
+              src="https://vsad25.gosuslugi.ru/netcat_files/userfiles/US/2026/ikonka.png"
+              alt="Управляющий совет"
+              className="h-20 w-20 rounded-2xl shadow-lg bg-white/10 backdrop-blur-sm"
+            />
             <span className="text-sm font-bold uppercase tracking-widest text-blue-200">
-              МБДОУ "Детский сад №25 г.Выборга"
+              МБДОУ "Детский сад №25 г. Выборга"
             </span>
           </div>
           <h1 className="text-center text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
