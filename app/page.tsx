@@ -13,6 +13,7 @@ import {
   Lightbulb,
   Award,
   Newspaper,
+  MoreHorizontal,
   ChevronRight,
 } from "lucide-react";
 
@@ -95,7 +96,7 @@ const sections = [
     count: null,
   },
   {
-    title: "Благодарности и награды",
+    title: "Награды и благодарности",
     description: "Дипломы, грамоты, благодарственные письма",
     icon: Award,
     href: "/awards",
@@ -106,6 +107,13 @@ const sections = [
     description: "Лента новостей и событий совета",
     icon: Newspaper,
     href: "/news",
+    count: null,
+  },
+  {
+    title: "Прочее",
+    description: "Дополнительные материалы и ресурсы",
+    icon: MoreHorizontal,
+    href: "/other",
     count: null,
   },
 ];
