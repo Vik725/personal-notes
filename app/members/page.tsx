@@ -49,6 +49,16 @@ async function saveToDisk(members: Member[]) {
   } catch {}
 }
 
+// Преобразует ссылку Яндекс.Диска в прямую ссылку на изображение
+function getPhotoUrl(url: string): string {
+  if (!url) return "";
+  const match = url.match(/disk\.yandex\.ru\/i\/([a-zA-Z0-9_-]+)/);
+  if (match) {
+    return `/api/photo-proxy?key=${match[1]}`;
+  }
+  return url;
+}
+
 export default function MembersPage() {
   const { isEditMode } = useEditMode();
   const [members, setMembers] = useState<Member[]>([]);
@@ -138,7 +148,7 @@ export default function MembersPage() {
               </div>
               <div><Label>ФИО</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
               <div><Label>Должность в совете</Label><Input value={form.position} onChange={(e) => setForm({ ...form, position: e.target.value })} /></div>
-              <div><Label>Ссылка на фото (URL)</Label><Input value={form.photo} onChange={(e) => setForm({ ...form, photo: e.target.value })} placeholder="https://..." /></div>
+              <div><Label>Ссылка на фото (можно ссылку с Яндекс.Диска)</Label><Input value={form.photo} onChange={(e) => setForm({ ...form, photo: e.target.value })} placeholder="https://disk.yandex.ru/i/..." /></div>
               <div className="flex gap-2">
                 <Button onClick={handleAdd}><Check className="h-4 w-4" /> Добавить</Button>
                 <Button variant="outline" onClick={() => { setAdding(false); resetForm(); }}><X className="h-4 w-4" /> Отмена</Button>
@@ -167,7 +177,7 @@ export default function MembersPage() {
                 <div className="flex items-start gap-4">
                   <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600 overflow-hidden">
                     {member.photo ? (
-                      <img src={member.photo} alt={member.name} className="h-full w-full object-cover" />
+                      <img src={getPhotoUrl(member.photo)} alt={member.name} className="h-full w-full object-cover" />
                     ) : (
                       <User className="h-7 w-7" />
                     )}
