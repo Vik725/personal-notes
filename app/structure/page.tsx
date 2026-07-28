@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, Sitemap, ExternalLink, Maximize2 } from "lucide-react";
+import { ArrowLeft, GitBranch, ExternalLink, Maximize2 } from "lucide-react";
 
 const STRUCTURE_IMAGE_URL = "https://vsad25.gosuslugi.ru/netcat_files/userfiles/US/2026/model_novaya.JPG";
 
@@ -13,7 +13,7 @@ export default function StructurePage() {
             На главную
           </Link>
           <div className="flex items-center gap-3">
-            <Sitemap className="h-8 w-8 text-blue-200" />
+                       <GitBranch className="h-8 w-8 text-blue-200" />
             <div>
               <h1 className="text-2xl font-bold sm:text-3xl">Структура совета</h1>
               <p className="mt-1 text-sm text-blue-200">
