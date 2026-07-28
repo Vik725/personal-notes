@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Video, Pencil, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,20 +8,60 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useEditMode } from "@/components/edit-mode-provider";
 
-const defaultVideo = {
+interface VideoData {
+  videoUrl: string;
+  title: string;
+  description: string;
+}
+
+const defaultVideo: VideoData = {
   videoUrl: "https://vk.com/video_ext.php?oid=-123456789&id=123456789&hash=abc123",
   title: "Презентационный видеоролик",
   description: "О деятельности Управляющего совета",
 };
 
+const DATA_FILE = "video.json";
+
+async function loadFromDisk(): Promise<VideoData | null> {
+  try {
+    const res = await fetch(`/api/disk?file=${DATA_FILE}`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch {}
+  return null;
+}
+
+async function saveToDisk(data: VideoData) {
+  try {
+    await fetch("/api/disk", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ file: DATA_FILE, data }),
+    });
+  } catch {}
+}
+
 export default function VideoPage() {
   const { isEditMode } = useEditMode();
-  const [video, setVideo] = useState(defaultVideo);
+  const [video, setVideo] = useState<VideoData>(defaultVideo);
+  const [loaded, setLoaded] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState({ ...video });
+  const [form, setForm] = useState({ ...defaultVideo });
 
-  const handleSave = () => {
+  useEffect(() => {
+    loadFromDisk().then((data) => {
+      if (data) {
+        setVideo(data);
+        setForm(data);
+      }
+      setLoaded(true);
+    });
+  }, []);
+
+  const handleSave = async () => {
     setVideo({ ...form });
+    await saveToDisk(form);
     setEditing(false);
   };
 
@@ -29,6 +69,8 @@ export default function VideoPage() {
     setForm({ ...video });
     setEditing(false);
   };
+
+  if (!loaded) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
