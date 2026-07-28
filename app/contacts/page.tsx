@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Phone, Mail, User, Pencil, X, Check, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Phone, Mail, User, Pencil, X, Check, Plus, Trash2, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useEditMode } from "@/components/edit-mode-provider";
 
@@ -24,43 +25,42 @@ const defaultContacts: Contact[] = [
 
 const DATA_FILE = "contacts.json";
 
-async function loadFromDisk(): Promise<Contact[] | null> {
+async function loadFromDisk(): Promise<{ contacts: Contact[]; additionalText: string } | null> {
   try {
     const res = await fetch(`/api/disk?file=${DATA_FILE}`);
     if (res.ok) {
-      const data = await res.json();
-      return data.contacts || null;
+      return await res.json();
     }
-  } catch (e) {
-    console.log("Failed to load from disk:", e);
-  }
+  } catch {}
   return null;
 }
 
-async function saveToDisk(contacts: Contact[]) {
+async function saveToDisk(data: { contacts: Contact[]; additionalText: string }) {
   try {
     await fetch("/api/disk", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ file: DATA_FILE, data: { contacts } }),
+      body: JSON.stringify({ file: DATA_FILE, data }),
     });
-  } catch (e) {
-    console.log("Failed to save to disk:", e);
-  }
+  } catch {}
 }
 
 export default function ContactsPage() {
   const { isEditMode } = useEditMode();
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [additionalText, setAdditionalText] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
+  const [editingText, setEditingText] = useState(false);
+  const [formText, setFormText] = useState("");
   const [form, setForm] = useState({ name: "", position: "", phone: "", email: "" });
 
   useEffect(() => {
     loadFromDisk().then((data) => {
-      if (data && data.length > 0) {
-        setContacts(data);
+      if (data && data.contacts && data.contacts.length > 0) {
+        setContacts(data.contacts);
+        setAdditionalText(data.additionalText || "");
       } else {
         setContacts(defaultContacts);
       }
@@ -68,9 +68,11 @@ export default function ContactsPage() {
     });
   }, []);
 
-  const save = async (newContacts: Contact[]) => {
+  const save = async (newContacts: Contact[], newText?: string) => {
+    const text = newText !== undefined ? newText : additionalText;
     setContacts(newContacts);
-    await saveToDisk(newContacts);
+    setAdditionalText(text);
+    await saveToDisk({ contacts: newContacts, additionalText: text });
   };
 
   const resetForm = () => setForm({ name: "", position: "", phone: "", email: "" });
@@ -95,6 +97,11 @@ export default function ContactsPage() {
 
   const handleDelete = async (id: string) => {
     await save(contacts.filter((c) => c.id !== id));
+  };
+
+  const handleSaveText = async () => {
+    await save(contacts, formText);
+    setEditingText(false);
   };
 
   if (!loaded) return null;
@@ -182,6 +189,44 @@ export default function ContactsPage() {
               )}
             </div>
           ))}
+
+          {/* Дополнительный текст */}
+          <div className="rounded-xl border bg-white p-5 shadow-sm">
+            <div className="flex items-start justify-between gap-2 mb-3">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                  <MessageSquare className="h-5 w-5" />
+                </div>
+                <h3 className="font-semibold text-gray-900">Дополнительные контакты</h3>
+              </div>
+              {isEditMode && !editingText && (
+                <Button variant="ghost" size="sm" onClick={() => { setEditingText(true); setFormText(additionalText); }}>
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+
+            {editingText ? (
+              <div className="space-y-3">
+                <div>
+                  <Label>Текст и ссылки</Label>
+                  <p className="text-xs text-gray-400 mb-1">Можно использовать HTML-ссылки: &lt;a href="https://..."&gt;текст&lt;/a&gt;</p>
+                  <Textarea value={formText} onChange={(e) => setFormText(e.target.value)} rows={5} placeholder='Общая почта: info@example.com&#10;Форма обратной связи: &lt;a href="https://..."&gt;Написать нам&lt;/a&gt;' />
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={handleSaveText}><Check className="h-4 w-4" /> Сохранить</Button>
+                  <Button variant="outline" onClick={() => { setEditingText(false); setFormText(additionalText); }}><X className="h-4 w-4" /> Отмена</Button>
+                </div>
+              </div>
+            ) : additionalText ? (
+              <div
+                className="text-sm text-gray-700 prose prose-blue max-w-none [&_a]:text-blue-600 [&_a]:underline [&_a]:hover:text-blue-800"
+                dangerouslySetInnerHTML={{ __html: additionalText.replace(/\n\n/g, "<br/><br/>").replace(/\n/g, "<br/>") }}
+              />
+            ) : (
+              <p className="text-sm text-gray-400">Нет дополнительной информации</p>
+            )}
+          </div>
         </div>
       </div>
     </div>
