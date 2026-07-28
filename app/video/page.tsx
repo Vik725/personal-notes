@@ -42,13 +42,20 @@ async function saveToDisk(data: VideoData) {
   } catch {}
 }
 
-function getDirectUrl(url: string): string {
-  // Если ссылка с Яндекс.Диска, преобразуем в прямую
-  const match = url.match(/disk\.yandex\.ru\/i\/([a-zA-Z0-9_-]+)/);
-  if (match) {
-    return `https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key=https://disk.yandex.ru/i/${match[1]}`;
+// Получает прямую ссылку на скачивание с Яндекс.Диска
+async function getDirectDownloadUrl(publicUrl: string): Promise<string> {
+  try {
+    const match = publicUrl.match(/disk\.yandex\.ru\/i\/([a-zA-Z0-9_-]+)/);
+    if (!match) return publicUrl;
+
+    const res = await fetch(
+      `https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key=https://disk.yandex.ru/i/${match[1]}`
+    );
+    const data = await res.json();
+    return data.href || publicUrl;
+  } catch {
+    return publicUrl;
   }
-  return url;
 }
 
 export default function VideoPage() {
@@ -70,18 +77,7 @@ export default function VideoPage() {
   }, []);
 
   useEffect(() => {
-    // Получаем прямую ссылку на видео
-    const url = getDirectUrl(video.videoUrl);
-    if (url.includes("cloud-api")) {
-      fetch(url)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.href) setDirectUrl(data.href);
-        })
-        .catch(() => setDirectUrl(video.videoUrl));
-    } else {
-      setDirectUrl(video.videoUrl);
-    }
+    getDirectDownloadUrl(video.videoUrl).then(setDirectUrl);
   }, [video.videoUrl]);
 
   const handleSave = async () => {
@@ -157,7 +153,7 @@ export default function VideoPage() {
                     className="h-full w-full"
                     playsInline
                   >
-                    <source src={directUrl} />
+                    <source src={directUrl} type="video/mp4" />
                     Ваш браузер не поддерживает видео
                   </video>
                 </div>
