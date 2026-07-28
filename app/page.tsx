@@ -127,7 +127,7 @@ export default function HomePage() {
           <div className="flex items-center justify-center gap-3 mb-4">
             <Building2 className="h-8 w-8 text-blue-200" />
             <span className="text-sm font-bold uppercase tracking-widest text-blue-200">
-              Детский сад
+              МБДОУ "Детский сад №25 г.Выборга"
             </span>
           </div>
           <h1 className="text-center text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
