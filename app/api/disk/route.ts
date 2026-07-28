@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const YA_DISK_TOKEN = process.env.YA_DISK_TOKEN || "";
 const BASE_URL = "https://cloud-api.yandex.net/v1/disk";
-const APP_FOLDER = "app/data";
+const APP_FOLDER = "uprav-sovet/data";
 
 export async function GET(request: NextRequest) {
   const file = request.nextUrl.searchParams.get("file");
