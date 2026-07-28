@@ -127,8 +127,14 @@ export default function AboutPage() {
               <Textarea value={form.keyFactsText} onChange={(e) => setForm({ ...form, keyFactsText: e.target.value })} rows={5} />
             </div>
             <div>
-              <Label>Дополнительный текст (можно вставлять ссылки в формате HTML)</Label>
-              <Textarea value={form.additionalText} onChange={(e) => setForm({ ...form, additionalText: e.target.value })} rows={4} placeholder='Например: Подробнее на сайте &lt;a href="https://example.com"&gt;название&lt;/a&gt;' />
+              <Label>Дополнительный текст и ссылки</Label>
+              <p className="text-xs text-gray-400 mb-1">Можно писать текст, вставлять ссылки в формате HTML. Каждый блок с новой строки — будет разделён пустой строкой.</p>
+              <Textarea
+                value={form.additionalText}
+                onChange={(e) => setForm({ ...form, additionalText: e.target.value })}
+                rows={8}
+                placeholder={'Ссылка на положение: <a href="https://example.com">Положение об Управляющем совете</a>\n\nСсылка на приказ: <a href="https://example.com">Приказ о создании</a>'}
+              />
             </div>
             <div className="flex gap-2">
               <Button onClick={handleSave}><Check className="h-4 w-4" /> Сохранить</Button>
@@ -172,8 +178,8 @@ export default function AboutPage() {
 
             {info.additionalText && (
               <div
-                className="rounded-lg border bg-blue-50 p-4 text-sm text-blue-800 prose prose-blue max-w-none"
-                dangerouslySetInnerHTML={{ __html: info.additionalText }}
+                className="rounded-lg border bg-blue-50 p-5 text-sm text-blue-800 prose prose-blue max-w-none [&_a]:text-blue-600 [&_a]:underline [&_a]:hover:text-blue-800 [&_br]:block [&_br]:content-[''] [&_br]:my-2"
+                dangerouslySetInnerHTML={{ __html: info.additionalText.replace(/\n\n/g, "<br/><br/>").replace(/\n/g, "<br/>") }}
               />
             )}
           </div>
