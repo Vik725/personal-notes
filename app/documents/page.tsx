@@ -1,15 +1,17 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, FolderOpen, ExternalLink, Maximize2, Minimize2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowLeft, FolderOpen, ExternalLink, FileText, ShieldCheck } from "lucide-react";
 
 const GOSUSLUGI_URL = "https://vsad25.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/struktura-i-organy-upravleniya-obrazovatelnoy-organizatsii/upravlyayuschiy-sovet/dokumenty/";
 
-export default function DocumentsPage() {
-  const [fullscreen, setFullscreen] = useState(false);
+const documents = [
+  { title: "Положение об Управляющем совете", description: "Основной документ, регламентирующий деятельность совета" },
+  { title: "Регламент работы", description: "Порядок проведения заседаний и принятия решений" },
+  { title: "Приказы о создании", description: "Приказы о создании и составе Управляющего совета" },
+  { title: "Планы работы", description: "Годовые и текущие планы работы совета" },
+  { title: "Отчёты о деятельности", description: "Отчёты о работе Управляющего совета" },
+];
 
+export default function DocumentsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-white">
@@ -18,52 +20,71 @@ export default function DocumentsPage() {
             <ArrowLeft className="h-4 w-4" />
             На главную
           </Link>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <FolderOpen className="h-8 w-8 text-blue-200" />
+          <div className="flex items-center gap-3">
+            <FolderOpen className="h-8 w-8 text-blue-200" />
+            <div>
               <h1 className="text-2xl font-bold sm:text-3xl">Документы</h1>
+              <p className="mt-1 text-sm text-blue-200">
+                Основные документы Управляющего совета
+              </p>
             </div>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => setFullscreen(!fullscreen)}
-              className="bg-white/20 text-white hover:bg-white/30"
-            >
-              {fullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-            </Button>
           </div>
-          <p className="mt-2 text-sm text-blue-200">
-            Документы Управляющего совета загружаются с официального сайта
-          </p>
         </div>
       </div>
 
-      <div className={`mx-auto px-4 py-8 ${fullscreen ? "max-w-7xl" : "max-w-4xl"}`}>
-        <div className={`rounded-xl border bg-white shadow-sm overflow-hidden ${fullscreen ? "" : "p-4"}`}>
-          <div className="flex items-center justify-between mb-3 px-2">
-            <p className="text-sm text-gray-500">
-              Документы с сайта детского сада
-            </p>
-            <a
-              href={GOSUSLUGI_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 transition-colors"
-            >
-              <ExternalLink className="h-3.5 w-3.5" />
-              Открыть в браузере
-            </a>
+      <div className="mx-auto max-w-4xl px-4 py-8">
+        {/* Карточка-ссылка на сайт */}
+        <a
+          href={GOSUSLUGI_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group block rounded-xl border-2 border-blue-100 bg-gradient-to-br from-blue-50 to-white p-6 shadow-sm hover:shadow-md hover:border-blue-300 transition-all mb-8"
+        >
+          <div className="flex items-start gap-4">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm group-hover:bg-blue-700 transition-colors">
+              <ExternalLink className="h-7 w-7" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h2 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                Все документы на сайте детского сада
+              </h2>
+              <p className="mt-1 text-sm text-gray-500">
+                Нажмите, чтобы перейти на официальный сайт и посмотреть актуальные документы Управляющего совета
+              </p>
+              <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700 group-hover:bg-blue-200 transition-colors">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Официальный сайт
+                <ExternalLink className="h-3.5 w-3.5 ml-1" />
+              </div>
+            </div>
           </div>
-          <div className={`w-full ${fullscreen ? "h-[80vh]" : "h-[500px]"} rounded-lg overflow-hidden border`}>
-            <iframe
-              src={GOSUSLUGI_URL}
-              width="100%"
-              height="100%"
-              className="border-0"
-              title="Документы Управляющего совета"
-              sandbox="allow-same-origin allow-forms allow-scripts"
-            />
-          </div>
+        </a>
+
+        {/* Список документов */}
+        <div className="space-y-3">
+          <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+            Документы Управляющего совета
+          </h3>
+          {documents.map((doc, i) => (
+            <div key={i} className="flex items-start gap-3 rounded-lg border bg-white p-4 shadow-sm">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                <FileText className="h-5 w-5" />
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900">{doc.title}</h4>
+                <p className="text-sm text-gray-500">{doc.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Подсказка */}
+        <div className="mt-8 rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-blue-800">
+          <p className="font-medium">📌 Актуальные документы</p>
+          <p className="mt-1 text-blue-600">
+            Все документы публикуются на официальном сайте детского сада. 
+            Нажмите на карточку выше, чтобы перейти к полному списку документов.
+          </p>
         </div>
       </div>
     </div>
