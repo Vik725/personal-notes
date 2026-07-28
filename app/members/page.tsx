@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Users, Pencil, X, Check, Plus, Trash2, User, ChevronDown } from "lucide-react";
+import { ArrowLeft, Users, Pencil, X, Check, Plus, Trash2, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,8 +25,6 @@ const defaultMembers: Member[] = [
   { id: "5", number: 5, name: "Смирнова Ольга Ивановна", photo: "", position: "Член совета", category: "Педагоги" },
   { id: "6", number: 6, name: "Белова Татьяна Михайловна", photo: "", position: "Член совета", category: "Представители учредителя" },
 ];
-
-const categories = ["Председатель", "Заместитель председателя", "Родители", "Педагоги", "Представители учредителя"];
 
 const DATA_FILE = "members.json";
 
@@ -136,12 +134,7 @@ export default function MembersPage() {
               <h3 className="font-semibold text-gray-900">Новый член совета</h3>
               <div className="grid grid-cols-2 gap-3">
                 <div><Label>№ п/п</Label><Input type="number" value={form.number} onChange={(e) => setForm({ ...form, number: parseInt(e.target.value) || 0 })} /></div>
-                <div><Label>Категория</Label>
-                  <select className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
-                    <option value="">Выберите...</option>
-                    {categories.map((c) => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                </div>
+                <div><Label>Категория</Label><Input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="Например: Председатель, Родители, Педагоги" /></div>
               </div>
               <div><Label>ФИО</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
               <div><Label>Должность в совете</Label><Input value={form.position} onChange={(e) => setForm({ ...form, position: e.target.value })} /></div>
@@ -160,11 +153,7 @@ export default function MembersPage() {
                   <h3 className="font-semibold text-gray-900">Редактировать</h3>
                   <div className="grid grid-cols-2 gap-3">
                     <div><Label>№ п/п</Label><Input type="number" value={form.number} onChange={(e) => setForm({ ...form, number: parseInt(e.target.value) || 0 })} /></div>
-                    <div><Label>Категория</Label>
-                      <select className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
-                        {categories.map((c) => <option key={c} value={c}>{c}</option>)}
-                      </select>
-                    </div>
+                    <div><Label>Категория</Label><Input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} /></div>
                   </div>
                   <div><Label>ФИО</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
                   <div><Label>Должность</Label><Input value={form.position} onChange={(e) => setForm({ ...form, position: e.target.value })} /></div>
