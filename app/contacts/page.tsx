@@ -128,6 +128,44 @@ export default function ContactsPage() {
 
       <div className="mx-auto max-w-4xl px-4 py-8">
         <div className="space-y-4">
+          {/* Дополнительный текст — на самом верху */}
+          <div className="rounded-xl border bg-white p-5 shadow-sm">
+            <div className="flex items-start justify-between gap-2 mb-3">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                  <MessageSquare className="h-5 w-5" />
+                </div>
+                <h3 className="font-semibold text-gray-900">Контакты</h3>
+              </div>
+              {isEditMode && !editingText && (
+                <Button variant="ghost" size="sm" onClick={() => { setEditingText(true); setFormText(additionalText); }}>
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+
+            {editingText ? (
+              <div className="space-y-3">
+                <div>
+                  <Label>Текст и ссылки</Label>
+                  <p className="text-xs text-gray-400 mb-1">Можно использовать HTML-ссылки: &lt;a href="https://..."&gt;текст&lt;/a&gt; и email: &lt;a href="mailto:..."&gt;почта&lt;/a&gt;</p>
+                  <Textarea value={formText} onChange={(e) => setFormText(e.target.value)} rows={5} placeholder='Общая почта: <a href="mailto:Sivkova13@mail.ru">Sivkova13@mail.ru</a>&#10;Форма обратной связи: <a href="https://...">Написать нам</a>' />
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={handleSaveText}><Check className="h-4 w-4" /> Сохранить</Button>
+                  <Button variant="outline" onClick={() => { setEditingText(false); setFormText(additionalText); }}><X className="h-4 w-4" /> Отмена</Button>
+                </div>
+              </div>
+            ) : additionalText ? (
+              <div
+                className="text-sm text-gray-700 prose prose-blue max-w-none [&_a]:text-blue-600 [&_a]:underline [&_a]:hover:text-blue-800"
+                dangerouslySetInnerHTML={{ __html: additionalText.replace(/\n\n/g, "<br/><br/>").replace(/\n/g, "<br/>") }}
+              />
+            ) : (
+              <p className="text-sm text-gray-400">Нет дополнительной информации</p>
+            )}
+          </div>
+
           {adding && (
             <div className="rounded-xl border bg-white p-5 shadow-sm space-y-3">
               <h3 className="font-semibold text-gray-900">Новый контакт</h3>
@@ -189,44 +227,6 @@ export default function ContactsPage() {
               )}
             </div>
           ))}
-
-          {/* Дополнительный текст */}
-          <div className="rounded-xl border bg-white p-5 shadow-sm">
-            <div className="flex items-start justify-between gap-2 mb-3">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-                  <MessageSquare className="h-5 w-5" />
-                </div>
-                <h3 className="font-semibold text-gray-900">Дополнительные контакты</h3>
-              </div>
-              {isEditMode && !editingText && (
-                <Button variant="ghost" size="sm" onClick={() => { setEditingText(true); setFormText(additionalText); }}>
-                  <Pencil className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-
-            {editingText ? (
-              <div className="space-y-3">
-                <div>
-                  <Label>Текст и ссылки</Label>
-                  <p className="text-xs text-gray-400 mb-1">Можно использовать HTML-ссылки: &lt;a href="https://..."&gt;текст&lt;/a&gt;</p>
-                  <Textarea value={formText} onChange={(e) => setFormText(e.target.value)} rows={5} placeholder='Общая почта: info@example.com&#10;Форма обратной связи: &lt;a href="https://..."&gt;Написать нам&lt;/a&gt;' />
-                </div>
-                <div className="flex gap-2">
-                  <Button onClick={handleSaveText}><Check className="h-4 w-4" /> Сохранить</Button>
-                  <Button variant="outline" onClick={() => { setEditingText(false); setFormText(additionalText); }}><X className="h-4 w-4" /> Отмена</Button>
-                </div>
-              </div>
-            ) : additionalText ? (
-              <div
-                className="text-sm text-gray-700 prose prose-blue max-w-none [&_a]:text-blue-600 [&_a]:underline [&_a]:hover:text-blue-800"
-                dangerouslySetInnerHTML={{ __html: additionalText.replace(/\n\n/g, "<br/><br/>").replace(/\n/g, "<br/>") }}
-              />
-            ) : (
-              <p className="text-sm text-gray-400">Нет дополнительной информации</p>
-            )}
-          </div>
         </div>
       </div>
     </div>
