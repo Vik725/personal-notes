@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, Building2, Calendar, Users, FileCheck, Pencil, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,8 +9,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useEditMode } from "@/components/edit-mode-provider";
 
-const defaultInfo = {
-  institutionName: "МБДОУ «Детский сад №...»",
+interface BasicInfo {
+  institutionName: string;
+  councilStatus: string;
+  termStart: string;
+  termEnd: string;
+  keyFacts: string[];
+}
+
+const defaultInfo: BasicInfo = {
+  institutionName: "МБДОУ «Детский сад №25 г. Выборга»",
   councilStatus: "Управляющий совет",
   termStart: "2024",
   termEnd: "2026",
@@ -21,20 +29,55 @@ const defaultInfo = {
   ],
 };
 
+const DATA_FILE = "basic-info.json";
+
+async function loadFromDisk(): Promise<BasicInfo | null> {
+  try {
+    const res = await fetch(`/api/disk?file=${DATA_FILE}`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch {}
+  return null;
+}
+
+async function saveToDisk(data: BasicInfo) {
+  try {
+    await fetch("/api/disk", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ file: DATA_FILE, data }),
+    });
+  } catch {}
+}
+
 export default function AboutPage() {
   const { isEditMode } = useEditMode();
-  const [info, setInfo] = useState(defaultInfo);
+  const [info, setInfo] = useState<BasicInfo>(defaultInfo);
+  const [loaded, setLoaded] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState({ ...info, keyFactsText: info.keyFacts.join("\n") });
+  const [form, setForm] = useState({ ...defaultInfo, keyFactsText: defaultInfo.keyFacts.join("\n") });
 
-  const handleSave = () => {
-    setInfo({
+  useEffect(() => {
+    loadFromDisk().then((data) => {
+      if (data) {
+        setInfo(data);
+        setForm({ ...data, keyFactsText: data.keyFacts.join("\n") });
+      }
+      setLoaded(true);
+    });
+  }, []);
+
+  const handleSave = async () => {
+    const newInfo: BasicInfo = {
       institutionName: form.institutionName,
       councilStatus: form.councilStatus,
       termStart: form.termStart,
       termEnd: form.termEnd,
       keyFacts: form.keyFactsText.split("\n").filter((f) => f.trim()),
-    });
+    };
+    setInfo(newInfo);
+    await saveToDisk(newInfo);
     setEditing(false);
   };
 
@@ -42,6 +85,8 @@ export default function AboutPage() {
     setForm({ ...info, keyFactsText: info.keyFacts.join("\n") });
     setEditing(false);
   };
+
+  if (!loaded) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
