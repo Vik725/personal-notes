@@ -2,8 +2,6 @@ name: Build APK
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
 
 jobs:
   build:
@@ -14,6 +12,7 @@ jobs:
         run: |
           git clone https://github.com/Vik725/personal-notes.git .
           git checkout main
+          ls -la scripts/
 
       - name: Setup Java
         run: |
@@ -42,6 +41,9 @@ jobs:
 
       - name: Install Bubblewrap
         run: npm install -g @bubblewrap/cli
+
+      - name: List scripts
+        run: ls -la scripts/
 
       - name: Build APK
         run: node scripts/build-apk.mjs
