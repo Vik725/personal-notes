@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Video, Pencil, X, Check } from "lucide-react";
+import { ArrowLeft, Video, Pencil, X, Check, ExternalLink, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -124,8 +124,35 @@ export default function VideoPage() {
               </div>
             </div>
           ) : (
-            <div className="aspect-video w-full overflow-hidden rounded-lg bg-gray-100">
-              <iframe src={video.videoUrl} width="100%" height="100%" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowFullScreen className="border-0" title={video.title} />
+            <div>
+              {/* Превью с кнопкой воспроизведения */}
+              <a
+                href={video.videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block aspect-video w-full overflow-hidden rounded-lg bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 relative"
+              >
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm group-hover:bg-white/30 transition-all group-hover:scale-110">
+                    <Play className="h-10 w-10 text-white ml-1" />
+                  </div>
+                </div>
+                <div className="absolute bottom-4 left-4 right-4">
+                  <p className="text-sm font-medium text-white/90">Нажмите, чтобы открыть видео</p>
+                </div>
+              </a>
+              <div className="mt-4 flex justify-center">
+                <a
+                  href={video.videoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-medium text-white hover:bg-blue-700 transition-colors shadow-sm"
+                >
+                  <Play className="h-4 w-4" />
+                  Смотреть видео
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              </div>
             </div>
           )}
         </div>
