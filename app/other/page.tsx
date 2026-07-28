@@ -33,6 +33,16 @@ export default function OtherPage() {
       </div>
 
       <div className="mx-auto max-w-4xl px-4 py-8">
+        <div className="rounded-xl border border-blue-100 bg-blue-50 p-4 mb-6 text-sm text-blue-800">
+          <p className="flex items-center gap-2 font-medium">
+            <ShieldCheck className="h-4 w-4" />
+            Информация с официального сайта
+          </p>
+          <p className="mt-1 text-blue-600">
+            Все материалы и ресурсы публикуются на официальном сайте детского сада. Нажмите на ссылку, чтобы перейти к соответствующему разделу.
+          </p>
+        </div>
+
         <div className="space-y-3">
           {links.map((item, i) => {
             const Icon = item.icon;
