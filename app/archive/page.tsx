@@ -4,10 +4,11 @@ import { ArrowLeft, Archive, ExternalLink, ShieldCheck, Calendar } from "lucide-
 const GOSUSLUGI_URL = "https://vsad25.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/struktura-i-organy-upravleniya-obrazovatelnoy-organizatsii/upravlyayuschiy-sovet/arhiv-dokumentov/";
 
 const years = [
-  { year: "2025-2026", description: "Документы текущего учебного года", active: true },
-  { year: "2024-2025", description: "Документы прошлого учебного года", active: false },
-  { year: "2023-2024", description: "Документы за 2023-2024 учебный год", active: false },
+  { year: "2025-2026", description: "Документы за 2025-2026 учебный год" },
+  { year: "2024-2025", description: "Документы за 2024-2025 учебный год" },
+  { year: "2023-2024", description: "Документы за 2023-2024 учебный год" },
 ];
+
 
 export default function ArchivePage() {
   return (
