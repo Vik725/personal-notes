@@ -1,15 +1,7 @@
 import Link from "next/link";
-import { ArrowLeft, FolderOpen, ExternalLink, FileText, ShieldCheck } from "lucide-react";
+import { ArrowLeft, FolderOpen, ExternalLink, ShieldCheck } from "lucide-react";
 
 const GOSUSLUGI_URL = "https://vsad25.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/struktura-i-organy-upravleniya-obrazovatelnoy-organizatsii/upravlyayuschiy-sovet/dokumenty/";
-
-const documents = [
-  { title: "Положение об Управляющем совете", description: "Основной документ, регламентирующий деятельность совета" },
-  { title: "Регламент работы", description: "Порядок проведения заседаний и принятия решений" },
-  { title: "Приказы о создании", description: "Приказы о создании и составе Управляющего совета" },
-  { title: "Планы работы", description: "Годовые и текущие планы работы совета" },
-  { title: "Отчёты о деятельности", description: "Отчёты о работе Управляющего совета" },
-];
 
 export default function DocumentsPage() {
   return (
@@ -33,12 +25,11 @@ export default function DocumentsPage() {
       </div>
 
       <div className="mx-auto max-w-4xl px-4 py-8">
-        {/* Карточка-ссылка на сайт */}
         <a
           href={GOSUSLUGI_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="group block rounded-xl border-2 border-blue-100 bg-gradient-to-br from-blue-50 to-white p-6 shadow-sm hover:shadow-md hover:border-blue-300 transition-all mb-8"
+          className="group block rounded-xl border-2 border-blue-100 bg-gradient-to-br from-blue-50 to-white p-6 shadow-sm hover:shadow-md hover:border-blue-300 transition-all"
         >
           <div className="flex items-start gap-4">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm group-hover:bg-blue-700 transition-colors">
@@ -46,10 +37,10 @@ export default function DocumentsPage() {
             </div>
             <div className="min-w-0 flex-1">
               <h2 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-                Все документы на сайте детского сада
+                Документы на сайте детского сада
               </h2>
               <p className="mt-1 text-sm text-gray-500">
-                Нажмите, чтобы перейти на официальный сайт и посмотреть актуальные документы Управляющего совета
+                Нажмите, чтобы перейти на официальный сайт и ознакомиться с документами
               </p>
               <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700 group-hover:bg-blue-200 transition-colors">
                 <ShieldCheck className="h-3.5 w-3.5" />
@@ -60,30 +51,10 @@ export default function DocumentsPage() {
           </div>
         </a>
 
-        {/* Список документов */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-            Документы Управляющего совета
-          </h3>
-          {documents.map((doc, i) => (
-            <div key={i} className="flex items-start gap-3 rounded-lg border bg-white p-4 shadow-sm">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-                <FileText className="h-5 w-5" />
-              </div>
-              <div>
-                <h4 className="font-medium text-gray-900">{doc.title}</h4>
-                <p className="text-sm text-gray-500">{doc.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Подсказка */}
         <div className="mt-8 rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-blue-800">
-          <p className="font-medium">📌 Актуальные документы</p>
+          <p className="font-medium">📌 Документы</p>
           <p className="mt-1 text-blue-600">
-            Все документы публикуются на официальном сайте детского сада. 
-            Нажмите на карточку выше, чтобы перейти к полному списку документов.
+            Все документы публикуются на официальном сайте детского сада. Нажмите на карточку выше, чтобы перейти к полному перечню.
           </p>
         </div>
       </div>
