@@ -1,102 +1,39 @@
-import Link from "next/link";
-import { ArrowLeft, Archive, ExternalLink, ShieldCheck, Calendar } from "lucide-react";
-
-const GOSUSLUGI_URL = "https://vsad25.gosuslugi.ru/svedeniya-ob-obrazovatelnoy-organizatsii/struktura-i-organy-upravleniya-obrazovatelnoy-organizatsii/upravlyayuschiy-sovet/arhiv-dokumentov/";
-
-const years = [
-  { year: "2025-2026", description: "Документы за 2025-2026 учебный год" },
-  { year: "2024-2025", description: "Документы за 2024-2025 учебный год" },
-  { year: "2023-2024", description: "Документы за 2023-2024 учебный год" },
-];
-
-
-export default function ArchivePage() {
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 text-white">
-        <div className="mx-auto max-w-4xl px-4 py-12">
-          <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-blue-200 hover:text-white transition-colors mb-6">
-            <ArrowLeft className="h-4 w-4" />
-            На главную
-          </Link>
-          <div className="flex items-center gap-3">
-            <Archive className="h-8 w-8 text-blue-200" />
-            <div>
-              <h1 className="text-2xl font-bold sm:text-3xl">Архив документов</h1>
-              <p className="mt-1 text-sm text-blue-200">
-                Документы Управляющего совета за предыдущие годы
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="mx-auto max-w-4xl px-4 py-8">
-        <a
-          href={GOSUSLUGI_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group block rounded-xl border-2 border-blue-100 bg-gradient-to-br from-blue-50 to-white p-6 shadow-sm hover:shadow-md hover:border-blue-300 transition-all mb-8"
-        >
-          <div className="flex items-start gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm group-hover:bg-blue-700 transition-colors">
-              <ExternalLink className="h-7 w-7" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <h2 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-                Архив на сайте детского сада
-              </h2>
-              <p className="mt-1 text-sm text-gray-500">
-                Нажмите, чтобы перейти на официальный сайт и посмотреть архив документов
-              </p>
-              <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700 group-hover:bg-blue-200 transition-colors">
-                <ShieldCheck className="h-3.5 w-3.5" />
-                Официальный сайт
-                <ExternalLink className="h-3.5 w-3.5 ml-1" />
-              </div>
-            </div>
-          </div>
-        </a>
-
-        <div className="space-y-4">
-          <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
-            Архив по учебным годам
-          </h3>
-          {years.map((item, i) => (
-            <div key={i} className={`rounded-xl border bg-white p-5 shadow-sm ${
-              item.active ? "ring-2 ring-blue-500" : ""
-            }`}>
-              <div className="flex items-start gap-4">
-                <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${
-                  item.active ? "bg-blue-600 text-white" : "bg-blue-50 text-blue-600"
-                }`}>
-                  <Calendar className="h-6 w-6" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <h4 className="text-lg font-semibold text-gray-900">
-                      {item.year} учебный год
-                    </h4>
-                    {item.active && (
-                      <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">
-                        Текущий
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-1 text-sm text-gray-500">{item.description}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-8 rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-blue-800">
-          <p className="font-medium">📌 Архив документов</p>
-          <p className="mt-1 text-blue-600">
-            Полный архив документов за все годы публикуется на официальном сайте детского сада.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
+10:52:32.668 Running build in Washington, D.C., USA (East) – iad1
+10:52:32.673 Build machine configuration: 2 cores, 8 GB
+10:52:32.880 Cloning github.com/Vik725/personal-notes (Branch: main, Commit: 080e6cf)
+10:52:33.957 Cloning completed: 1.077s
+10:52:34.908 Restored build cache from previous deployment (CEsJ5TxLYR3gg5bNMojLLenUSymN)
+10:52:35.189 Running "vercel build"
+10:52:35.213 Vercel CLI 56.5.0
+10:52:35.505 Installing dependencies...
+10:52:41.490 
+10:52:41.491 up to date in 6s
+10:52:41.491 
+10:52:41.491 235 packages are looking for funding
+10:52:41.491   run `npm fund` for details
+10:52:41.529 Detected Next.js version: 16.2.2
+10:52:41.537 Running "npm run build"
+10:52:41.639 
+10:52:41.639 > vibecraft-template@0.1.0 build
+10:52:41.639 > next build
+10:52:41.639 
+10:52:42.314   Applying modifyConfig from Vercel
+10:52:42.333 ▲ Next.js 16.2.2 (Turbopack)
+10:52:42.333 
+10:52:42.362   Creating an optimized production build ...
+10:52:48.096 ✓ Compiled successfully in 5.4s
+10:52:48.097   Running TypeScript ...
+10:52:52.025 Failed to type check.
+10:52:52.025 
+10:52:52.025 ./app/archive/page.tsx:67:20
+10:52:52.025 Type error: Property 'active' does not exist on type '{ year: string; description: string; }'.
+10:52:52.025 
+10:52:52.025   65 |           {years.map((item, i) => (
+10:52:52.026   66 |             <div key={i} className={`rounded-xl border bg-white p-5 shadow-sm ${
+10:52:52.026 > 67 |               item.active ? "ring-2 ring-blue-500" : ""
+10:52:52.026      |                    ^
+10:52:52.026   68 |             }`}>
+10:52:52.026   69 |               <div className="flex items-start gap-4">
+10:52:52.026   70 |                 <div className={`flex h-12 w-12 shrink-0 items-center justify-center round...
+10:52:52.092 Next.js build worker exited with code: 1 and signal: null
+10:52:52.139 Error: Command "npm run build" exited with 1
