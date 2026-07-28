@@ -77,7 +77,10 @@ export default function VideoPage() {
   }, []);
 
   useEffect(() => {
-    getDirectDownloadUrl(video.videoUrl).then(setDirectUrl);
+    getDirectDownloadUrl(video.videoUrl).then((url) => {
+      // Используем прокси для обхода ограничений
+      setDirectUrl(`/api/video-proxy?url=${encodeURIComponent(url)}`);
+    });
   }, [video.videoUrl]);
 
   const handleSave = async () => {
